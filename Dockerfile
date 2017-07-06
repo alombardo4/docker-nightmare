@@ -1,11 +1,10 @@
 FROM node:latest
-MAINTAINER Kyle Chamberlain <kchamb3@gmail.com>
+MAINTAINER Alec Lombardo
 
 # add our user and group first to make sure their IDs get assigned consistently, regardless of whatever dependencies get added
 RUN groupadd --system nightmare && useradd --system --create-home --gid nightmare nightmare
 ENV ROOT "/root/nightmare"
 
-ENV DEBUG=nightmare
 ENV ARGUMENTS=()
 
 RUN apt-get update && apt-get install -y \
@@ -39,6 +38,7 @@ RUN apt-get update && apt-get install -y \
 WORKDIR ${ROOT}
 COPY ./package.json ./
 RUN npm install
+RUN npm i -g electron nightmare yarn
 
 VOLUME ${ROOT}
 
