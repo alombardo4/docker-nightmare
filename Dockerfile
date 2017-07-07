@@ -1,11 +1,7 @@
 FROM node:latest
-MAINTAINER Alec Lombardo
+MAINTAINER Alec Lombardo <alec.lombardo@gmail.com>
 
 # add our user and group first to make sure their IDs get assigned consistently, regardless of whatever dependencies get added
-RUN groupadd --system nightmare && useradd --system --create-home --gid nightmare nightmare
-ENV ROOT "/root/nightmare"
-
-ENV ARGUMENTS=()
 
 RUN apt-get update && apt-get install -y \
   xvfb \
@@ -35,12 +31,9 @@ RUN apt-get update && apt-get install -y \
 		rm -rf /usr/share/man/* /usr/share/groff/* /usr/share/info/* && \
 		rm -rf /usr/share/lintian/* /usr/share/linda/* /var/cache/man/*
 
-WORKDIR ${ROOT}
-COPY ./package.json ./
-RUN npm install
-RUN npm i -g electron nightmare yarn
+RUN npm i -g yarn
+RUN yarn global add nightmare ipaddr.js
+RUN Xvfb :99 -screen 0 1280x800x24 &
 
-VOLUME ${ROOT}
-
-COPY docker-entrypoint.sh /entrypoint.sh
-ENTRYPOINT ["/entrypoint.sh"]
+USER root
+CMD /bin/bash
